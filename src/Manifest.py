@@ -5,7 +5,7 @@ files = [
 
 modules = {
     "git": [
-        "git@github.com:hdl-util/i2c.git::master",
+        "https://github.com/hdl-util/i2c::master",
     ]
 }
 fetchto = "../ip_cores"
