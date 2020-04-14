@@ -5,8 +5,8 @@ module imx219 #(
     parameter ADDRESS = 8'h20
 ) (
     input logic clk_in,
-    inout logic scl,
-    inout logic sda,
+    inout wire scl,
+    inout wire sda,
     // 0 = Power off
     // 1 = Software standby
     // 2 = Streaming
@@ -70,14 +70,16 @@ i2c_master #(.INPUT_CLK_RATE(INPUT_CLK_RATE), .TARGET_SCL_RATE(TARGET_SCL_RATE))
 
 logic [15:0] MODEL_ID = 16'h0219;
 
-logic [24:0] PRE_STANDBY [2:0] = '{
+logic [24:0] PRE_STANDBY [2:0];
+assign PRE_STANDBY = '{
     {1'b1, 16'h0000, MODEL_ID[15:8]},   // Read module_model_id high
     {1'b1, 16'h0001, MODEL_ID[7:0]},    // Read module_model_id low
 	// {1'b0, 16'h0100, 8'd2},				// mode_select <= streaming (forces LP-11 on standby) 
     {1'b0, 16'h0100, 8'd1}              // mode_select <= standby
 };
 
-logic [24:0] PRE_STREAM [57:0] = '{
+logic [24:0] PRE_STREAM [57:0];
+assign PRE_STREAM = '{
 	{1'b0, 16'h30eb, 8'h0c}, // Manufacturer address access code
 	{1'b0, 16'h30eb, 8'h05},
 	{1'b0, 16'h300a, 8'hff},
@@ -139,7 +141,8 @@ logic [24:0] PRE_STREAM [57:0] = '{
 	{1'b0, 16'h479b, 8'h0e}
 };
 
-logic [24:0] POST_STREAM [0:0] = '{
+logic [24:0] POST_STREAM [0:0];
+assign POST_STREAM = '{
 	{1'b0, 16'h0x0100, 8'h00} // Send to standby
 	// TODO: standby spinlock
 };
@@ -163,9 +166,12 @@ assign ready = sensor_state == 3'd0 || sensor_state == 3'd2 || sensor_state == 3
 
 assign power_enable = sensor_state != 3'd0;
 
-logic [7:0] rom_end = sensor_state == 3'd1 ? 8'd2 : sensor_state == 3'd3 ? 8'd57 : sensor_state == 3'd6 ? 8'd0 : 8'd0;
-logic [24:0] previous_rom = rom_counter == 8'd0 ? 25'd0 : sensor_state == 3'd1 ? PRE_STANDBY[rom_counter - 1'd1] : sensor_state == 3'd3 ? PRE_STREAM[rom_counter - 1'd1] : sensor_state == 3'd6 ? POST_STREAM[rom_counter - 1'd1] : 25'd0;
-logic [24:0] current_rom = sensor_state == 3'd1 ? PRE_STANDBY[rom_counter] : sensor_state == 3'd3 ? PRE_STREAM[rom_counter] : sensor_state == 3'd6 ? POST_STREAM[rom_counter] : 25'd0;
+logic [7:0] rom_end;
+assign rom_end = sensor_state == 3'd1 ? 8'd2 : sensor_state == 3'd3 ? 8'd57 : sensor_state == 3'd6 ? 8'd0 : 8'd0;
+logic [24:0] previous_rom;
+assign previous_rom = rom_counter == 8'd0 ? 25'd0 : sensor_state == 3'd1 ? PRE_STANDBY[rom_counter - 1'd1] : sensor_state == 3'd3 ? PRE_STREAM[rom_counter - 1'd1] : sensor_state == 3'd6 ? POST_STREAM[rom_counter - 1'd1] : 25'd0;
+logic [24:0] current_rom;
+assign current_rom = sensor_state == 3'd1 ? PRE_STANDBY[rom_counter] : sensor_state == 3'd3 ? PRE_STREAM[rom_counter] : sensor_state == 3'd6 ? POST_STREAM[rom_counter] : 25'd0;
 
 always @(posedge clk_in)
 begin
@@ -218,7 +224,7 @@ begin
 					transfer_continues <= 1'd0;
 					i2c_mode <= current_rom[24];
 					data_tx <= current_rom[7:0];
-					if (rom_counter == 8'd2) // Last write about to begin
+					if (rom_counter == rom_end) // Last write about to begin
 					begin
 						byte_counter <= 2'd0;
 						rom_counter <= 8'd0;
