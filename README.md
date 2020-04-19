@@ -23,3 +23,4 @@ These documents are not hosted here! They are available on Library Genesis and a
 
 * [MIPI CCS v1.1](https://b-ok.cc/book/5437872/02a689)
 * [IMX219 Datasheet](https://github.com/rellimmot/Sony-IMX219-Raspberry-Pi-V2-CMOS/blob/master/RASPBERRY%20PI%20CAMERA%20V2%20DATASHEET%20IMX219PQH5_7.0.0_Datasheet_XXX.PDF)
+* [OV5647 Datasheet](https://cdn.sparkfun.com/datasheets/Dev/RaspberryPi/ov5647_full.pdf)

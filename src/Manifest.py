@@ -1,5 +1,6 @@
 files = [
-    "imx219.sv"
+    "imx219.sv",
+    "ov5647.sv"
 ]
 
 
