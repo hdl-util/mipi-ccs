@@ -78,7 +78,7 @@ assign PRE_STANDBY = '{
 
 logic [24:0] PRE_STREAM [0:58];
 assign PRE_STREAM = '{
-	{1'b0, 16'h30eb, 8'h05}, // Manufacturer address access code
+	{1'b0, 16'h30eb, 8'h05}, // Manufacturer access command sequence (See Section 3-4)
 	{1'b0, 16'h30eb, 8'h0c},
 	{1'b0, 16'h300a, 8'hff},
 	{1'b0, 16'h300b, 8'hff},
