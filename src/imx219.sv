@@ -39,9 +39,7 @@ logic bus_clear;
 
 logic transfer_start = 1'b0;
 logic transfer_continues = 1'b0;
-logic i2c_mode = 1'b0;
 logic [7:0] address;
-assign address = ADDRESS + i2c_mode;
 logic [7:0] data_tx = 8'd0;
 
 logic transfer_ready;
@@ -70,18 +68,18 @@ i2c_master #(.INPUT_CLK_RATE(INPUT_CLK_RATE), .TARGET_SCL_RATE(TARGET_SCL_RATE))
 
 logic [15:0] MODEL_ID = 16'h0219;
 
-logic [24:0] PRE_STANDBY [2:0];
+logic [24:0] PRE_STANDBY [0:2];
 assign PRE_STANDBY = '{
     {1'b1, 16'h0000, MODEL_ID[15:8]},   // Read module_model_id high
-    {1'b1, 16'h0001, MODEL_ID[7:0]},    // Read module_model_id low
-	// {1'b0, 16'h0100, 8'd2},				// mode_select <= streaming (forces LP-11 on standby) 
-    {1'b0, 16'h0100, 8'd1}              // mode_select <= standby
+	{1'b1, 16'h0001, MODEL_ID[7:0]},    // Read module_model_id low
+	// {1'b0, 16'h0100, 8'd1},				// mode_select <= streaming (forces LP-11 on standby) 
+    {1'b0, 16'h0100, 8'd0}              // mode_select <= standby
 };
 
-logic [24:0] PRE_STREAM [57:0];
+logic [24:0] PRE_STREAM [0:58];
 assign PRE_STREAM = '{
-	{1'b0, 16'h30eb, 8'h0c}, // Manufacturer address access code
-	{1'b0, 16'h30eb, 8'h05},
+	{1'b0, 16'h30eb, 8'h05}, // Manufacturer address access code
+	{1'b0, 16'h30eb, 8'h0c},
 	{1'b0, 16'h300a, 8'hff},
 	{1'b0, 16'h300b, 8'hff},
 	{1'b0, 16'h30eb, 8'h05},
@@ -103,10 +101,10 @@ assign PRE_STREAM = '{
 	{1'b0, 16'h016a, resolution == 2'd0 ? 8'h09 : resolution == 2'd1 ? 8'h06 : resolution == 2'd2 ? 8'h09: 8'h06}, // Y-address end MSB
 	{1'b0, 16'h016b, resolution == 2'd0 ? 8'h9f : resolution == 2'd1 ? 8'heb : resolution == 2'd2 ? 8'h9f: 8'haf}, // Y-address end LSB
 
-	{1'b0, 16'h016c, resolution == 2'd0 ? 8'h0c : resolution == 2'd1 ? 8'h07 : resolution == 2'd2 ? 8'h06 : 8'h06}, // X-output size MSB
-	{1'b0, 16'h016d, resolution == 2'd0 ? 8'hd0 : resolution == 2'd1 ? 8'h80 : resolution == 2'd2 ? 8'h68 : 8'h68}, // X-output size LSB
-	{1'b0, 16'h016e, resolution == 2'd0 ? 8'h09 : resolution == 2'd1 ? 8'h04 : resolution == 2'd2 ? 8'h04 : 8'h04}, // Y-output size MSB
-	{1'b0, 16'h016f, resolution == 2'd0 ? 8'ha0 : resolution == 2'd1 ? 8'h38 : resolution == 2'd2 ? 8'hd0 : 8'hd0}, // Y-output size LSB
+	{1'b0, 16'h016c, resolution == 2'd0 ? 8'h0c : resolution == 2'd1 ? 8'h07 : resolution == 2'd2 ? 8'h06 : 8'h02}, // X-output size MSB
+	{1'b0, 16'h016d, resolution == 2'd0 ? 8'hd0 : resolution == 2'd1 ? 8'h80 : resolution == 2'd2 ? 8'h68 : 8'h80}, // X-output size LSB
+	{1'b0, 16'h016e, resolution == 2'd0 ? 8'h09 : resolution == 2'd1 ? 8'h04 : resolution == 2'd2 ? 8'h04 : 8'h01}, // Y-output size MSB
+	{1'b0, 16'h016f, resolution == 2'd0 ? 8'ha0 : resolution == 2'd1 ? 8'h38 : resolution == 2'd2 ? 8'hd0 : 8'he0}, // Y-output size LSB
 	{1'b0, 16'h0170, 8'h01}, // X odd increment
 	{1'b0, 16'h0171, 8'h01}, // Y odd increment
 	{1'b0, 16'h0174, resolution == 2'd0 ? 8'h00 : resolution == 2'd1 ? 8'h00 : resolution == 2'd2 ? 8'h01 : 8'h03}, // Vertical binning mode
@@ -118,15 +116,15 @@ assign PRE_STREAM = '{
 	{1'b0, 16'h0304, 8'h03}, // External (pre-PLL) clock divider for video timing (3 for 24MHz to 27MHz)
 	{1'b0, 16'h0305, 8'h03}, // External (pre-PLL) clock divider for output (3 for 24MHz to 27MHz)
 	{1'b0, 16'h0306, 8'h00}, // PLL video timing system multiplier MSB
-	{1'b0, 16'h0307, 8'h39}, // PLL video timing system multiplier LSB
+	{1'b0, 16'h0307, 8'h20}, // PLL video timing system multiplier LSB
 	{1'b0, 16'h0309, format ? 8'h0a : 8'h08}, // Output pixel clock divider (/10 for 10-bit, /8 for 8-bit)
 	{1'b0, 16'h030b, 8'h01}, // Output sytem clock divider (always /2)
 	{1'b0, 16'h030c, 8'h00}, // PLL output system clock multiplier MSB
-	{1'b0, 16'h030d, 8'h72}, // PLL output system clock multiplier LSB (DDR clock, as compared to 0x0307)
-	{1'b0, 16'h0624, resolution == 2'd0 ? 8'h0c : resolution == 2'd1 ? 8'h07 : resolution == 2'd2 ? 8'h06 : 8'h06}, // Test pattern window width MSB
-	{1'b0, 16'h0625, resolution == 2'd0 ? 8'hd0 : resolution == 2'd1 ? 8'h80 : resolution == 2'd2 ? 8'h68 : 8'h68}, // Test pattern window width LSB
-	{1'b0, 16'h0626, resolution == 2'd0 ? 8'h09 : resolution == 2'd1 ? 8'h04 : resolution == 2'd2 ? 8'h04 : 8'h04}, // Test pattern window height MSB
-	{1'b0, 16'h0627, resolution == 2'd0 ? 8'ha0 : resolution == 2'd1 ? 8'h38 : resolution == 2'd2 ? 8'hd0 : 8'hd0}, // Test pattern window height LSB
+	{1'b0, 16'h030d, 8'h40}, // PLL output system clock multiplier LSB (DDR clock, as compared to 0x0307)
+	{1'b0, 16'h0624, resolution == 2'd0 ? 8'h0c : resolution == 2'd1 ? 8'h07 : resolution == 2'd2 ? 8'h06 : 8'h02}, // Test pattern window width MSB
+	{1'b0, 16'h0625, resolution == 2'd0 ? 8'hd0 : resolution == 2'd1 ? 8'h80 : resolution == 2'd2 ? 8'h68 : 8'h80}, // Test pattern window width LSB
+	{1'b0, 16'h0626, resolution == 2'd0 ? 8'h09 : resolution == 2'd1 ? 8'h04 : resolution == 2'd2 ? 8'h04 : 8'h01}, // Test pattern window height MSB
+	{1'b0, 16'h0627, resolution == 2'd0 ? 8'ha0 : resolution == 2'd1 ? 8'h38 : resolution == 2'd2 ? 8'hd0 : 8'he0}, // Test pattern window height LSB
 	{1'b0, 16'h455e, 8'h00}, // CMOS Image Sensor Tuning for all below
 	{1'b0, 16'h471e, 8'h4b},
 	{1'b0, 16'h4767, 8'h0f},
@@ -138,12 +136,13 @@ assign PRE_STREAM = '{
 	{1'b0, 16'h478f, 8'h10},
 	{1'b0, 16'h4793, 8'h10},
 	{1'b0, 16'h4797, 8'h0e},
-	{1'b0, 16'h479b, 8'h0e}
+	{1'b0, 16'h479b, 8'h0e},
+	{1'b0, 16'h0100, 8'h01} // Start streaming
 };
 
 logic [24:0] POST_STREAM [0:0];
 assign POST_STREAM = '{
-	{1'b0, 16'h0x0100, 8'h00} // Send to standby
+	{1'b0, 16'h0100, 8'h00} // Send to standby
 	// TODO: standby spinlock
 };
 
@@ -167,9 +166,8 @@ assign ready = sensor_state == 3'd0 || sensor_state == 3'd2 || sensor_state == 3
 assign power_enable = sensor_state != 3'd0;
 
 logic [7:0] rom_end;
-assign rom_end = sensor_state == 3'd1 ? 8'd2 : sensor_state == 3'd3 ? 8'd57 : sensor_state == 3'd6 ? 8'd0 : 8'd0;
-logic [24:0] previous_rom;
-assign previous_rom = rom_counter == 8'd0 ? 25'd0 : sensor_state == 3'd1 ? PRE_STANDBY[rom_counter - 1'd1] : sensor_state == 3'd3 ? PRE_STREAM[rom_counter - 1'd1] : sensor_state == 3'd6 ? POST_STREAM[rom_counter - 1'd1] : 25'd0;
+assign rom_end = sensor_state == 3'd1 ? 8'd2 : sensor_state == 3'd3 ? 8'd58 : sensor_state == 3'd6 ? 8'd0 : 8'd0;
+
 logic [24:0] current_rom;
 assign current_rom = sensor_state == 3'd1 ? PRE_STANDBY[rom_counter] : sensor_state == 3'd3 ? PRE_STREAM[rom_counter] : sensor_state == 3'd6 ? POST_STREAM[rom_counter] : 25'd0;
 
@@ -183,50 +181,54 @@ begin
         3'd1, 3'd3, 3'd6: begin
 			if (interrupt || transfer_ready)
 			begin
-				// Catch write nacks
-				if (interrupt && (address_err || (mode == 1'd0 && nack)))
+				if (interrupt && (address_err || (!address[0] && nack))) // Catch write nacks
 				begin
 					transfer_start <= 1'b0;
 					transfer_continues <= 1'b0;
+					byte_counter <= 2'd0;
+					rom_counter <= 8'd0;
 					nack_err <= 1'd1;
 					sensor_state <= 3'd7;
 				end
-				else if (byte_counter == 2'd0) // Address MSB
+				else if (transfer_ready && byte_counter == 2'd0) // Write address MSB
 				begin
-					if (rom_counter != 8'd0 && previous_rom[24] && previous_rom[7:0] != data_rx) // Last read does not match expected
+					transfer_start <= 1'd1;
+					transfer_continues <= 1'd1;
+					address <= {ADDRESS[7:1], 1'b0};
+					data_tx <= current_rom[23:16];
+					byte_counter <= 2'd1;
+				end
+				else if (interrupt && byte_counter == 2'd1) // Write address LSB
+				begin
+					transfer_start <= 1'd0;
+					transfer_continues <= !current_rom[24];
+					data_tx <= current_rom[15:8];
+					byte_counter <= 2'd2;
+				end
+				else if (interrupt && byte_counter == 2'd2) // Write/Read register
+				begin
+					transfer_start <= current_rom[24];
+					transfer_continues <= 1'd0;
+					if (current_rom[24])
+						address <= {ADDRESS[7:1], 1'b1};
+					data_tx <= current_rom[7:0];
+					byte_counter <= 2'd3;
+				end
+				else if (interrupt && byte_counter == 2'd3) // Readback
+				begin
+					transfer_start <= 1'd0;
+					transfer_continues <= 1'd0;
+					byte_counter <= 2'd0;
+
+					if (current_rom[24] && current_rom[7:0] != data_rx) // Read did not match expected
 					begin
-						byte_counter <= 2'd0;
 						rom_counter <= 8'd0;
 						if (sensor_state == 3'd1) // was a model error
 							model_err <= 1'd1;
 						sensor_state <= 3'd7;
 					end
-					else
+					else if (rom_counter == rom_end) // This was the last operation
 					begin
-						transfer_start <= 1'd1;
-						transfer_continues <= 1'd1;
-						i2c_mode <= 1'd0;
-						data_tx <= current_rom[23:16];
-						byte_counter <= 2'd1;
-					end
-				end
-				else if (byte_counter == 2'd1) // Address LSB
-				begin
-					transfer_start <= 1'd0;
-					transfer_continues <= !current_rom[24];
-					i2c_mode <= 1'd0;
-					data_tx <= current_rom[15:8];
-					byte_counter <= 2'd2;
-				end
-				else if (byte_counter == 2'd2) // Register read or write
-				begin
-					transfer_start <= current_rom[24];
-					transfer_continues <= 1'd0;
-					i2c_mode <= current_rom[24];
-					data_tx <= current_rom[7:0];
-					if (rom_counter == rom_end) // Last write about to begin
-					begin
-						byte_counter <= 2'd0;
 						rom_counter <= 8'd0;
 						if (sensor_state == 3'd5)
 							sensor_state <= 3'd4; // Modifications complete
@@ -236,10 +238,7 @@ begin
 							sensor_state <= sensor_state + 1'd1; // Pre-standby and Pre-stream
 					end
 					else
-					begin
-						byte_counter <= 2'd0;
 						rom_counter <= rom_counter + 1'd1;
-					end
 				end
 			end
         end
