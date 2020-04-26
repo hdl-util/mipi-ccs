@@ -25,7 +25,7 @@ logic power_enable;
 logic model_err;
 logic nack_err;
 
-imx219 imx219 (
+imx219 #(.INPUT_CLK_RATE(48000000)) imx219 (
     .clk_in(clk_in),
     .scl(scl),
     .sda(sda),

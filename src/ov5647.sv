@@ -1,5 +1,5 @@
 module ov5647 #(
-    parameter INPUT_CLK_RATE = 48000000,
+    parameter INPUT_CLK_RATE,
     parameter TARGET_SCL_RATE = 400000,
     // Some ov5647 modules have a different address, change this if yours does
     parameter ADDRESS = 8'h6c
