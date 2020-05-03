@@ -1,8 +1,8 @@
 module imx219 #(
-    parameter INPUT_CLK_RATE,
-    parameter TARGET_SCL_RATE = 400000,
+    parameter int INPUT_CLK_RATE,
+    parameter int TARGET_SCL_RATE = 400000,
     // Some IMX219 modules have a different address, change this if yours does
-    parameter ADDRESS = 8'h20
+    parameter bit [7:0] ADDRESS = 8'h20
 ) (
     input logic clk_in,
     inout wire scl,
