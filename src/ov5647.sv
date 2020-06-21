@@ -77,56 +77,56 @@ assign PRE_STANDBY = '{
 
 logic [24:0] PRE_STREAM [0:88];
 assign PRE_STREAM = '{
-  {1'b0, 16'h3034, 8'h08},
-  {1'b0, 16'h3035, 8'h41},
-  {1'b0, 16'h3036, 8'h46},
-  {1'b0, 16'h303c, 8'h11},
-  {1'b0, 16'h3106, 8'hf5},
-  {1'b0, 16'h3821, 8'h07},
-  {1'b0, 16'h3820, 8'h41},
-  {1'b0, 16'h3827, 8'hec},
-  {1'b0, 16'h370c, 8'h0f},
-  {1'b0, 16'h3612, 8'h59},
-  {1'b0, 16'h3618, 8'h00},
-  {1'b0, 16'h5000, 8'h06},
-  {1'b0, 16'h5001, 8'h00},
-  {1'b0, 16'h5002, 8'h40},
-  {1'b0, 16'h5003, 8'h08},
-  {1'b0, 16'h5a00, 8'h08},
-  {1'b0, 16'h3000, 8'h00},
-  {1'b0, 16'h3001, 8'h00},
-  {1'b0, 16'h3002, 8'h00},
-  {1'b0, 16'h3016, 8'h08},
-  {1'b0, 16'h3017, 8'he0},
-  {1'b0, 16'h3018, 8'h44},
-  {1'b0, 16'h301c, 8'hf8},
-  {1'b0, 16'h301d, 8'hf0},
-  {1'b0, 16'h3a18, 8'h00},
-  {1'b0, 16'h3a19, 8'hf8},
-  {1'b0, 16'h3c01, 8'h80},
-  {1'b0, 16'h3b07, 8'h0c},
-  {1'b0, 16'h380c, 8'h07},
-  {1'b0, 16'h380d, 8'h68},
-  {1'b0, 16'h380e, 8'h03},
-  {1'b0, 16'h380f, 8'hd8},
-  {1'b0, 16'h3814, 8'h31},
-  {1'b0, 16'h3815, 8'h31},
-  {1'b0, 16'h3708, 8'h64},
-  {1'b0, 16'h3709, 8'h52},
-  {1'b0, 16'h3808, 8'h02},
-  {1'b0, 16'h3809, 8'h80},
-  {1'b0, 16'h380a, 8'h01},
-  {1'b0, 16'h380b, 8'he0},
-  {1'b0, 16'h3800, 8'h00},
-  {1'b0, 16'h3801, 8'h00},
-  {1'b0, 16'h3802, 8'h00},
-  {1'b0, 16'h3803, 8'h00},
-  {1'b0, 16'h3804, 8'h0a},
-  {1'b0, 16'h3805, 8'h3f},
-  {1'b0, 16'h3806, 8'h07},
-  {1'b0, 16'h3807, 8'ha1},
-  {1'b0, 16'h3811, 8'h08},
-  {1'b0, 16'h3813, 8'h02},
+  {1'b0, 16'h3034, 8'h08}, // PLL ctrl0: mipi 10 bit mode
+  {1'b0, 16'h3035, 8'h41}, // SC common PLL ctrl1:  system_clk_div by 4, scale_divider_mipi by 1
+  {1'b0, 16'h3036, 8'h46}, // PLL multiplier: times 70
+  {1'b0, 16'h303c, 8'h11}, // PLLS ctrl2: plls_cp 1, plls_sys_div by 1
+  {1'b0, 16'h3106, 8'hf5}, // SRB ctrl: pll_sclk / 4, enable sclk to arbiter
+  {1'b0, 16'h3821, 8'h07}, // Timing TC: r_mirror_isp, r_mirror_snr, r_hbin
+  {1'b0, 16'h3820, 8'h41}, // Timing TC: r_vbin, 1 unknown setting
+  {1'b0, 16'h3827, 8'hec}, // Debug mode
+  {1'b0, 16'h370c, 8'h0f}, // ???
+  {1'b0, 16'h3612, 8'h59}, // ???
+  {1'b0, 16'h3618, 8'h00}, // ???
+  {1'b0, 16'h5000, 8'h06}, // Black/white pixel cancellation
+  {1'b0, 16'h5001, 8'h01}, // Auto-white balance
+  {1'b0, 16'h5002, 8'h41}, // Auto-white balance gain, Win enable
+  {1'b0, 16'h5003, 8'h08}, // Buffer enable
+  {1'b0, 16'h5a00, 8'h08}, // Unused bit set, not sure why
+  {1'b0, 16'h3000, 8'h00}, // ???
+  {1'b0, 16'h3001, 8'h00}, // ???
+  {1'b0, 16'h3002, 8'h00}, // ???
+  {1'b0, 16'h3016, 8'h08}, // Mipi enable
+  {1'b0, 16'h3017, 8'he0}, // pgm_vcm = 11, pgm_lptx = 10
+  {1'b0, 16'h3018, 8'h44}, // Mipi two lane, mipi enable
+  {1'b0, 16'h301c, 8'hf8}, // ???
+  {1'b0, 16'h301d, 8'hf0}, // ???
+  {1'b0, 16'h3a18, 8'h00}, // aec gain ceiling = 248
+  {1'b0, 16'h3a19, 8'hf8}, // ctd.
+  {1'b0, 16'h3c01, 8'h80}, // 50/60 Hz detection
+  {1'b0, 16'h3b07, 8'h0c}, // exposure time
+  {1'b0, 16'h380c, 8'h07}, // total horizontal size = 1896
+  {1'b0, 16'h380d, 8'h68}, // ctd.
+  {1'b0, 16'h380e, 8'h03}, // total vertical size = 984
+  {1'b0, 16'h380f, 8'hd8}, // ctd.
+  {1'b0, 16'h3814, 8'h31}, // horizontal subsample odd increase number = 1, horizontal subsample even increase number = 3
+  {1'b0, 16'h3815, 8'h31}, // vertical subsample odd increase number = 1, vertical subsample even increase number = 3
+  {1'b0, 16'h3708, 8'h64}, // ???
+  {1'b0, 16'h3709, 8'h52}, // ???
+  {1'b0, 16'h3808, 8'h02}, // x output size = 640
+  {1'b0, 16'h3809, 8'h80}, // ctd.
+  {1'b0, 16'h380a, 8'h01}, // y output size = 480
+  {1'b0, 16'h380b, 8'he0}, // ctd.
+  {1'b0, 16'h3800, 8'h00}, // x addr start = 0
+  {1'b0, 16'h3801, 8'h00}, // ctd.
+  {1'b0, 16'h3802, 8'h00}, // y addr start = 0
+  {1'b0, 16'h3803, 8'h00}, // ctd.
+  {1'b0, 16'h3804, 8'h0a}, // x addr end = 2623
+  {1'b0, 16'h3805, 8'h3f}, // ctd.
+  {1'b0, 16'h3806, 8'h07}, // y addr end = 1953
+  {1'b0, 16'h3807, 8'ha1}, // ctd.
+  {1'b0, 16'h3811, 8'h08}, // ISP horizontal offset = 8
+  {1'b0, 16'h3813, 8'h02}, // ISP vertical offset = 2
   {1'b0, 16'h3630, 8'h2e},
   {1'b0, 16'h3632, 8'he2},
   {1'b0, 16'h3633, 8'h23},
@@ -145,27 +145,27 @@ assign PRE_STREAM = '{
   {1'b0, 16'h3f05, 8'h02},
   {1'b0, 16'h3f06, 8'h10},
   {1'b0, 16'h3f01, 8'h0a},
-  {1'b0, 16'h3a08, 8'h01},
-  {1'b0, 16'h3a09, 8'h27},
-  {1'b0, 16'h3a0a, 8'h00},
-  {1'b0, 16'h3a0b, 8'hf6},
-  {1'b0, 16'h3a0d, 8'h04},
-  {1'b0, 16'h3a0e, 8'h03},
-  {1'b0, 16'h3a0f, 8'h58},
-  {1'b0, 16'h3a10, 8'h50},
-  {1'b0, 16'h3a1b, 8'h58},
-  {1'b0, 16'h3a1e, 8'h50},
-  {1'b0, 16'h3a11, 8'h60},
-  {1'b0, 16'h3a1f, 8'h28},
-  {1'b0, 16'h4001, 8'h02},
-  {1'b0, 16'h4004, 8'h02},
-  {1'b0, 16'h4000, 8'h09},
-  {1'b0, 16'h4837, 8'h24},
-  {1'b0, 16'h4050, 8'h6e},
-  {1'b0, 16'h4051, 8'h8f},
-  {1'b0, 16'h503d, 8'h00},
-  {1'b0, 16'h0100, 8'h01},
-  {1'b0, 16'h4800, 8'h04}
+  {1'b0, 16'h3a08, 8'h01}, // b50_step = 295
+  {1'b0, 16'h3a09, 8'h27}, // ctd.
+  {1'b0, 16'h3a0a, 8'h00}, // b60_step = 246
+  {1'b0, 16'h3a0b, 8'hf6}, // ctd.
+  {1'b0, 16'h3a0d, 8'h04}, // b60_max = 4
+  {1'b0, 16'h3a0e, 8'h03}, // b50_max = 3
+  {1'b0, 16'h3a0f, 8'h58}, // WPT stable range high limit
+  {1'b0, 16'h3a10, 8'h50}, // BPT stable range low limit
+  {1'b0, 16'h3a1b, 8'h58}, // WPT2 stable range high limit
+  {1'b0, 16'h3a1e, 8'h50}, // BPT2 stable range low limit
+  {1'b0, 16'h3a11, 8'h60}, // High VPT
+  {1'b0, 16'h3a1f, 8'h28}, // Low VPT
+  {1'b0, 16'h4001, 8'h02}, // Start line = 2
+  {1'b0, 16'h4004, 8'h02}, // blc line num = 2
+  {1'b0, 16'h4000, 8'h09}, // adc11bit mode, blc enable
+  {1'b0, 16'h4837, 8'h24}, // PCLK_PERIOD
+  {1'b0, 16'h4050, 8'h6e}, // BLC max
+  {1'b0, 16'h4051, 8'h8f}, // BLC stable range
+  {1'b0, 16'h503d, 8'b00000000}, // test pattern control
+  {1'b0, 16'h4800, 8'b00000100}, // MIPI ctrl
+  {1'b0, 16'h0100, 8'h01}
 //   {1'b0, 16'h4202, 8'h00},
 //   {1'b0, 16'h300d, 8'h00}
 };
